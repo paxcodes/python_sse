@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 
 <head>
-<title>Testing SSEs</title>
+    <title>Testing SSEs</title>
 </head>
 
 <body>
-    <button>Open SSE Connection</button>
-    <hr />
     <button>Close SSE Connection</button>
     <hr />
-    <ul id="stuff"></ul>
+    <ul id="theList"></ul>
+    <script>
+        const evtSource = new EventSource("http://localhost:8000/sse")
+    </script>
 </body>
 
