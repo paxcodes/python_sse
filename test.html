@@ -10,6 +10,14 @@
     <ul id="theList"></ul>
     <script>
         const evtSource = new EventSource("http://localhost:8000/sse")
+        evtSource.onmessage = (event) => {
+            console.log(event);
+            const newElement = document.createElement("li");
+            newElement.innerHTML = "From the server: " + event.data;
+
+            const eventList = document.getElementById("theList")
+            eventList.appendChild(newElement);
+        }
     </script>
 </body>
 
