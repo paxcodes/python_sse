@@ -168,6 +168,14 @@ version = "1.15.0"
 
 [[package]]
 category = "main"
+description = "SSE plugin for Starlette"
+name = "sse-starlette"
+optional = false
+python-versions = "*"
+version = "0.3.1"
+
+[[package]]
+category = "main"
 description = "The little ASGI library that shines."
 name = "starlette"
 optional = false
@@ -221,7 +229,7 @@ python-versions = ">=3.6.1"
 version = "8.1"
 
 [metadata]
-content-hash = "e805e6cd1a615576efa6e1ba9ccf69e7dfad3e728f05e9d4233515f6d1ab62ee"
+content-hash = "88e2e2ecd271ccc6e669b716b509d6ea179fd8f7c60bd6c1a877a37eb6dd4b53"
 python-versions = "^3.8"
 
 [metadata.files]
@@ -309,6 +317,9 @@ pytest = [
 six = [
     {file = "six-1.15.0-py2.py3-none-any.whl", hash = "sha256:8b74bedcbbbaca38ff6d7491d76f2b06b3592611af620f8426e82dddb04a5ced"},
     {file = "six-1.15.0.tar.gz", hash = "sha256:30639c035cdb23534cd4aa2dd52c3bf48f06e5f4a941509c8bafd8ce11080259"},
+]
+sse-starlette = [
+    {file = "sse-starlette-0.3.1.tar.gz", hash = "sha256:c7d43dd9093c5613b1de3b87c307e066a3ab1e173e21dae470fc1de1e31dbbf6"},
 ]
 starlette = [
     {file = "starlette-0.13.2-py3-none-any.whl", hash = "sha256:6169ee78ded501095d1dda7b141a1dc9f9934d37ad23196e180150ace2c6449b"},

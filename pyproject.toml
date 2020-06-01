@@ -8,6 +8,7 @@ authors = ["Margret `Pax` Williams <pax.margret@gmail.com>"]
 python = "^3.8"
 fastapi = "^0.55.1"
 uvicorn = "^0.11.5"
+sse-starlette = "^0.3.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.4"
