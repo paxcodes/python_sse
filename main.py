@@ -1,3 +1,6 @@
+import string
+import secrets
+
 import uvicorn
 import asyncio
 from fastapi import Request
@@ -26,6 +29,12 @@ async def sse(req: Request):
             sumBefore, sum = sum, sum + sumBefore
             await asyncio.sleep(1)
     return EventSourceResponse(streamFibonacci(10000))
+
+@app.post("/room")
+async def createRoom():
+    alphabet = string.ascii_uppercase + string.digits
+    roomCode = ''.join(secrets.choice(alphabet) for i in range(6))
+    return roomCode
 
 
 if __name__ == "__main__":
