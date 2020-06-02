@@ -1,30 +1,31 @@
-from time import sleep
-
 import uvicorn
-
+import asyncio
+from fastapi import Request
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import StreamingResponse
+from sse_starlette.sse import EventSourceResponse
 
 app = FastAPI()
 
 app.add_middleware(CORSMiddleware, allow_origins=["*"])
 
 
-def streamFibonacci(num):
-    sumBefore, sum = 0, 1
-    while True:
-        yield f'data: {str(sum)}\n\n'
-        sumBefore, sum = sum, sum + sumBefore
-        sleep(1)
-
 @app.get("/")
 def home():
     return {"Hi!": "Pax!"}
 
 @app.get("/sse")
-def sse():
-    return StreamingResponse(streamFibonacci(500), media_type="text/event-stream")
+async def sse(req: Request):
+    async def streamFibonacci(num):
+        sumBefore, sum = 0, 1
+        while sum <= num:
+            disconnected = await req.is_disconnected()
+            if disconnected:
+                break
+            yield f'data: {str(sum)}\n\n'
+            sumBefore, sum = sum, sum + sumBefore
+            await asyncio.sleep(1)
+    return EventSourceResponse(streamFibonacci(10000))
 
 
 if __name__ == "__main__":
