@@ -30,8 +30,20 @@ async def sse(req: Request):
             await asyncio.sleep(1)
     return EventSourceResponse(streamFibonacci(10000))
 
+@app.get("/lobby/{room_code}")
+async def enterLobby(req: Request, room_code):
+    # TODO "validate" the room_code
+    async def streamRoomActivity():
+        yield 'data: Someone entered the lobby.\n\n'
+        while True:
+            disconnected = await req.is_disconnected()
+            if disconnected:
+                break
+    return EventSourceResponse(streamRoomActivity())
+
 @app.post("/room")
 async def createRoom():
+    # TODO keep track of created rooms.
     alphabet = string.ascii_uppercase + string.digits
     roomCode = ''.join(secrets.choice(alphabet) for i in range(6))
     return roomCode
