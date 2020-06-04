@@ -25,7 +25,7 @@ async def sse(req: Request):
             disconnected = await req.is_disconnected()
             if disconnected:
                 break
-            yield f'data: {str(sum)}\n\n'
+            yield str(sum)
             sumBefore, sum = sum, sum + sumBefore
             await asyncio.sleep(1)
     return EventSourceResponse(streamFibonacci(10000))
@@ -33,13 +33,13 @@ async def sse(req: Request):
 @app.get("/lobby/{room_code}")
 async def enterLobby(req: Request, room_code):
     # TODO "validate" the room_code
-    async def streamRoomActivity():
-        yield 'data: Someone entered the lobby.\n\n'
+    async def streamLobbyActivity():
+        yield 'Someone entered the lobby.'
         while True:
             disconnected = await req.is_disconnected()
             if disconnected:
                 break
-    return EventSourceResponse(streamRoomActivity())
+    return EventSourceResponse(streamLobbyActivity())
 
 @app.post("/room")
 async def createRoom():
