@@ -1,6 +1,6 @@
 import string
 import secrets
-from queue import Queue
+from queue import Queue, Empty
 
 import uvicorn
 import asyncio
@@ -41,6 +41,12 @@ async def enterLobby(req: Request, room_code):
             disconnected = await req.is_disconnected()
             if disconnected:
                 break
+            try:
+                lobbyActivity = lobbyQueue.get(block=False)
+            except Empty:
+                pass
+            else:
+                yield lobbyActivity
     return EventSourceResponse(streamLobbyActivity())
 
 @app.get("/room_request/{room_code}")
