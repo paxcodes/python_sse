@@ -1,5 +1,6 @@
 import string
 import secrets
+from queue import Queue
 
 import uvicorn
 import asyncio
@@ -12,6 +13,7 @@ app = FastAPI()
 
 app.add_middleware(CORSMiddleware, allow_origins=["*"])
 
+lobbyQueue = Queue()
 
 @app.get("/")
 def home():
@@ -40,6 +42,18 @@ async def enterLobby(req: Request, room_code):
             if disconnected:
                 break
     return EventSourceResponse(streamLobbyActivity())
+
+@app.get("/room_request/{room_code}")
+async def requestRoom(room_code):
+    # TODO "validate" the room_code. Only if the room is 
+    # joinable do we do these stuff. Otherwise, 4XX
+    # TODO We put "Somebody entered the lobby."
+    # here even BEFORE they entered the lobby.
+    lobbyQueue.put("Somebody entered the lobby.")
+    return room_code
+
+    
+
 
 @app.post("/room")
 async def createRoom():

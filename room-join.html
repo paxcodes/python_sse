@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+
+<head>
+    <title>Joining SSE Rooms</title>
+</head>
+
+<body>
+    <input id="roomCodeField" type="text" name="roomCode" placeholder="room code"/>
+    <button id="joinRoomBtn">Join the Room</button>
+
+
+    <h1 id="roomHeader" style="display:none;">In Room <span id="roomCode"></span></h1>
+    <ul id="theList"></ul>
+    
+    <script>
+        const updateHeader = (roomCode) => {
+            const roomCodeLabel = document.getElementById('roomCode')
+            roomCodeLabel.innerText = roomCode
+            const h1 = document.getElementById('roomHeader')
+            roomHeader.style.display = "block"
+        }
+
+        const enterRoomLobby = (roomCode) => {
+            const evtSource = new EventSource("http://localhost:8000/lobby/"+ roomCode)
+            evtSource.onmessage = (event) => {
+                console.log(event)
+                const newEvent = document.createElement("li");
+                newEvent.innerHTML = event.data;
+
+                const eventList = document.getElementById("theList");
+                eventList.appendChild(newEvent);
+            }
+
+            evtSource.onerror = (err) => {
+                console.error("EventSource failed: ", err);
+                evtSource.close();
+            }
+        }
+
+        const btn = document.getElementById('joinRoomBtn')
+        btn.onclick = () => {
+            const roomCode = document.getElementById('roomCodeField').value
+            fetch("http://localhost:8000/room_request/" + roomCode)
+            .then(response => {
+                return response.json()
+            })
+            .then(data => {
+                updateHeader(data);
+                enterRoomLobby(data);
+            })
+            .catch(error => {
+                console.error("Error: ", error);
+            })
+            // const evtSource = new EventSource("http://localhost:8000/lobby/"+ roomCode)
+            // evtSource.onmessage = (event)
+        }
+
+    </script>
+
+</body>
+
