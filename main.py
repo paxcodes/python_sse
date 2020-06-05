@@ -1,3 +1,7 @@
+import string
+import secrets
+from queue import Queue, Empty
+
 import uvicorn
 import asyncio
 from fastapi import Request
@@ -9,6 +13,7 @@ app = FastAPI()
 
 app.add_middleware(CORSMiddleware, allow_origins=["*"])
 
+lobbyQueue = Queue()
 
 @app.get("/")
 def home():
@@ -22,10 +27,46 @@ async def sse(req: Request):
             disconnected = await req.is_disconnected()
             if disconnected:
                 break
-            yield f'data: {str(sum)}\n\n'
+            yield str(sum)
             sumBefore, sum = sum, sum + sumBefore
             await asyncio.sleep(1)
     return EventSourceResponse(streamFibonacci(10000))
+
+@app.get("/lobby/{room_code}")
+async def enterLobby(req: Request, room_code):
+    # TODO "validate" the room_code
+    async def streamLobbyActivity():
+        yield 'Someone entered the lobby.'
+        while True:
+            disconnected = await req.is_disconnected()
+            if disconnected:
+                break
+            try:
+                lobbyActivity = lobbyQueue.get(block=False)
+            except Empty:
+                pass
+            else:
+                yield lobbyActivity
+    return EventSourceResponse(streamLobbyActivity())
+
+@app.get("/room_request/{room_code}")
+async def requestRoom(room_code, name):
+    # TODO "validate" the room_code. Only if the room is 
+    # joinable do we do these stuff. Otherwise, 4XX
+    # TODO We put "Somebody entered the lobby."
+    # here even BEFORE they entered the lobby.
+    lobbyQueue.put(f"{name} entered the lobby.")
+    return room_code
+
+    
+
+
+@app.post("/room")
+async def createRoom():
+    # TODO keep track of created rooms.
+    alphabet = string.ascii_uppercase + string.digits
+    roomCode = ''.join(secrets.choice(alphabet) for i in range(6))
+    return roomCode
 
 
 if __name__ == "__main__":
