@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 
 <head>
-    <title>Testing SSE Rooms</title>
+    <title>Joining SSE Rooms</title>
 </head>
 
 <body>
-    <button id="createRoomBtn">Create a Room</button>
+    <input id="nameField" type="text" name="username" placeholder="your name"/>
+    <button id="joinRoomBtn">Join the Room</button>
+
 
     <h1 id="roomHeader" style="display:none;">In Room <span id="roomCode"></span></h1>
     <ul id="theList"></ul>
@@ -35,19 +37,26 @@
             }
         }
 
-        const btn = document.getElementById('createRoomBtn');
+        const btn = document.getElementById('joinRoomBtn')
         btn.onclick = () => {
-            fetch("http://localhost:8000/room", {method: "POST"})
+            const roomCode = "FAKEROOM123"
+            const name = document.getElementById('nameField').value
+            fetch("http://localhost:8000/room_request/" + roomCode + "?name=" + name)
             .then(response => {
                 return response.json()
             })
             .then(data => {
-                console.log("DATA RETURNED BY THE SERVER: ", data);
                 updateHeader(data);
                 enterRoomLobby(data);
-            }).catch(error => {
-                console.error('Error: ', error);
-            });
+            })
+            .catch(error => {
+                console.error("Error: ", error);
+            })
+            // const evtSource = new EventSource("http://localhost:8000/lobby/"+ roomCode)
+            // evtSource.onmessage = (event)
         }
+
     </script>
+
 </body>
+
