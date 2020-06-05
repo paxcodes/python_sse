@@ -5,7 +5,7 @@
 </head>
 
 <body>
-    <input id="roomCodeField" type="text" name="roomCode" placeholder="room code"/>
+    <input id="nameField" type="text" name="username" placeholder="your name"/>
     <button id="joinRoomBtn">Join the Room</button>
 
 
@@ -39,8 +39,9 @@
 
         const btn = document.getElementById('joinRoomBtn')
         btn.onclick = () => {
-            const roomCode = document.getElementById('roomCodeField').value
-            fetch("http://localhost:8000/room_request/" + roomCode)
+            const roomCode = "FAKEROOM123"
+            const name = document.getElementById('nameField').value
+            fetch("http://localhost:8000/room_request/" + roomCode + "?name=" + name)
             .then(response => {
                 return response.json()
             })

@@ -50,12 +50,12 @@ async def enterLobby(req: Request, room_code):
     return EventSourceResponse(streamLobbyActivity())
 
 @app.get("/room_request/{room_code}")
-async def requestRoom(room_code):
+async def requestRoom(room_code, name):
     # TODO "validate" the room_code. Only if the room is 
     # joinable do we do these stuff. Otherwise, 4XX
     # TODO We put "Somebody entered the lobby."
     # here even BEFORE they entered the lobby.
-    lobbyQueue.put("Somebody entered the lobby.")
+    lobbyQueue.put(f"{name} entered the lobby.")
     return room_code
 
     
